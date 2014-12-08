@@ -24,20 +24,15 @@ namespace MyUnity.CommonUtilities{
 			return _path+"/"+_fileName;
 		}
 
-		public static void TakeScreenShot(string path,string fileName){
+		public static void TakeScreenShot(string fileName){		
 			_fileName = fileName;
-			_path = path;
-			Application.CaptureScreenshot(_path+"/"+_fileName);
-		}
-
-		public static void TakeScreenShot(string fileName){
 			#if UNITY_EDITOR
 			_path =  Application.dataPath;
+			Application.CaptureScreenshot("Assets/"+_fileName,3);
 			#else
 			_path =  Application.persistentDataPath;
+			Application.CaptureScreenshot(_fileName,3);
 			#endif
-			_fileName = fileName;
-			Application.CaptureScreenshot(_path+"/"+_fileName);
 
 		}
 	}

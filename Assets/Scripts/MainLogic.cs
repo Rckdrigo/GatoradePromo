@@ -14,6 +14,11 @@ public class MainLogic : Singleton<MainLogic> {
 
 	// Use this for initialization
 	private void Start () {
+#if !UNITY_EDITOR
+		bool focusModeSet = CameraDevice.Instance.SetFocusMode(CameraDevice.FocusMode.FOCUS_MODE_CONTINUOUSAUTO);
+		if (!focusModeSet) 
+			Debug.Log("Failed to set focus mode (unsupported mode).");
+#endif
 		EmailSender.SetCredentials(emailCredentials,passwordCredential);
 		string from = "prueba@prueba.com";
 		string to = "rckdrigomed@gmail.com";
@@ -31,34 +36,48 @@ public class MainLogic : Singleton<MainLogic> {
 	bool SearchFile(){
 		DirectoryInfo dir = new DirectoryInfo(ScreenCapture._Path);
 		foreach(FileInfo file in dir.GetFiles("*.jpg")){
-			print (file.FullName);
+			//print (file.FullName);
 			if(file.Name.Equals(ScreenCapture._FileName))
 			   return true;
 		}
 		return false;
 	}
 
-	IEnumerator TakeScreenShot(){
+	IEnumerator LookforFile(){
 		bool fileExists;
-		ScreenCapture.TakeScreenShot(fileName.Equals("")? "Screenshot.jpg":fileName);
-		yield return (fileExists = SearchFile());
 		yield return new WaitForSeconds(1);
-		if(fileExists)
+		yield return (fileExists = SearchFile());
+		if(fileExists){
 			ScreenController.Instance.Continue();
-		else
-			StartCoroutine(TakeScreenShot());
+			PreviewPhoto.Instance.ShowPreviewPhoto();
+			yield break;
+		}
+		else {		
+			ScreenCapture.TakeScreenShot(fileName.Equals("")? "Screenshot.jpg":fileName);	
+			StartCoroutine(LookforFile());
+		}
+
 	}
 
-	public void TakeShot(){
+	public void TakeShot(){	
 		if(!lookingForFile){
 			lookingForFile = true;
-			StartCoroutine(TakeScreenShot());
+			ScreenCapture.TakeScreenShot(fileName.Equals("")? "Screenshot.jpg":fileName);		
+			StartCoroutine(LookforFile());
 		}
 	}
 
 	public void SendEmail(){
 		StartCoroutine (EmailSender.SendEmail(ScreenCapture.GetLastScreenshotPath()));
 		ScreenController.Instance.Continue();
+	}
+
+	public void CamReset(){
+		lookingForFile = false;
+	}
+
+	public void Update(){
+		print (ConnectionStatus.Instance.connected);
 	}
 }
 

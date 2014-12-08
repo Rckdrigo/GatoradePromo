@@ -22,6 +22,10 @@ public sealed class ScreenController : Singleton<ScreenController> {
 		animator.SetTrigger("Return");
 	}
 
+	public void Disconnected () {
+		animator.SetTrigger("NoConnection");
+	}
+
 	public void Quit(){
 		Application.Quit();
 	}
