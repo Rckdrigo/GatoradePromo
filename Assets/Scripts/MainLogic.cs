@@ -9,7 +9,7 @@ public class MainLogic : Singleton<MainLogic> {
 	public string passwordCredential = "";
 
 	public string fileName = "";
-
+	//public GameObject loadingCircle;
 	bool lookingForFile;
 
 	// Use this for initialization
@@ -36,7 +36,6 @@ public class MainLogic : Singleton<MainLogic> {
 	bool SearchFile(){
 		DirectoryInfo dir = new DirectoryInfo(ScreenCapture._Path);
 		foreach(FileInfo file in dir.GetFiles("*.jpg")){
-			//print (file.FullName);
 			if(file.Name.Equals(ScreenCapture._FileName))
 			   return true;
 		}
@@ -68,6 +67,7 @@ public class MainLogic : Singleton<MainLogic> {
 	}
 
 	public void SendEmail(){
+		//loadingCircle.SetActive(true);
 		StartCoroutine (EmailSender.SendEmail(ScreenCapture.GetLastScreenshotPath()));
 		ScreenController.Instance.Continue();
 	}

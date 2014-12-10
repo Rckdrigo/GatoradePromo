@@ -44,7 +44,37 @@ public sealed class UserData : MonoBehaviour {
 		PlayerPrefs.SetString("email",emailInput.text);
 		PlayerPrefs.SetString("phone",phoneInput.text);
 
-		StartCoroutine(IsAWinningTicket());
+		if(ValidateInputs())
+			StartCoroutine(IsAWinningTicket());
+		else
+			InputMessages();
+			//print ("error");
+	}
+
+	void InputMessages(){
+		if(nTicketInput.text.Equals(""))
+			nTicketInput.placeholder.GetComponent<Text>().text = "Completa los datos";
+
+		if(usrNameInput.text.Equals(""))
+			usrNameInput.placeholder.GetComponent<Text>().text = "Completa los datos";
+
+		if(emailInput.text.Equals(""))
+			emailInput.placeholder.GetComponent<Text>().text = "Completa los datos";
+
+		if(phoneInput.text.Equals(""))
+			nTicketInput.placeholder.GetComponent<Text>().text = "Completa los datos";
+
+		if(storeInput.text.Equals(""))
+			storeInput.placeholder.GetComponent<Text>().text = "Completa los datos";
+	}
+
+	bool ValidateInputs(){
+		if(nTicket.Length == 0 || usrName.Length==0 || email.Length==0 || phone.Length==0 || store.Length==0)
+			return false;
+		if(nTicket.Length > 0 && (int.Parse(nTicket) > 100 || int.Parse(nTicket) < 0 ))
+			return false;
+
+		return true;
 	}
 
 	IEnumerator IsAWinningTicket(){

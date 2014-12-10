@@ -10,6 +10,10 @@ public sealed class ScreenController : Singleton<ScreenController> {
 		animator = GetComponent<Animator>();
 	}
 
+	public void ARDetected (bool value) {
+		animator.SetBool("ARDetection",value);
+	}
+
 	public void Continue () {
 		animator.SetTrigger("Continue");
 	}
