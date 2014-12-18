@@ -12,6 +12,8 @@ public sealed class UserData : MonoBehaviour {
 	public InputField phoneInput; 
 	public InputField storeInput; 
 
+	float amount;
+
 	[HideInInspector()]
 	public string nTicket;
 	[HideInInspector()]
@@ -39,39 +41,60 @@ public sealed class UserData : MonoBehaviour {
 		email = emailInput.text;	
 		phone = phoneInput.text;
 		store = storeInput.text;
-		
+
+		PlayerPrefs.SetString("nTicket",nTicketInput.text);
+		PlayerPrefs.SetString("store",storeInput.text);
+	
 		PlayerPrefs.SetString("usrName",usrNameInput.text);
 		PlayerPrefs.SetString("email",emailInput.text);
 		PlayerPrefs.SetString("phone",phoneInput.text);
 
 		if(ValidateInputs())
-			StartCoroutine(IsAWinningTicket());
-		else
+			
+//#if UNITY_EDITOR
+			//ScreenController.Instance.Continue();
+//#else
+		StartCoroutine(IsAWinningTicket());
+//#endif
+		else{
+#if !UNITY_EDITOR
+			Handheld.Vibrate();
+#endif
 			InputMessages();
-			//print ("error");
+		}
 	}
 
 	void InputMessages(){
-		if(nTicketInput.text.Equals(""))
-			nTicketInput.placeholder.GetComponent<Text>().text = "Completa los datos";
+		if(nTicketInput.text.Equals("")){
+			nTicketInput.placeholder.GetComponent<Text>().text = "No. de ticket";
+			nTicketInput.placeholder.GetComponent<Text>().color = Color.red;
+		}
 
-		if(usrNameInput.text.Equals(""))
-			usrNameInput.placeholder.GetComponent<Text>().text = "Completa los datos";
+		if(usrNameInput.text.Equals("")){
+			usrNameInput.placeholder.GetComponent<Text>().text = "Nombre";
+			usrNameInput.placeholder.GetComponent<Text>().color = Color.red;
+		}
 
-		if(emailInput.text.Equals(""))
-			emailInput.placeholder.GetComponent<Text>().text = "Completa los datos";
+		if(emailInput.text.Equals("")){
+			emailInput.placeholder.GetComponent<Text>().text = "Email";
+			emailInput.placeholder.GetComponent<Text>().color = Color.red;
+		}
 
-		if(phoneInput.text.Equals(""))
-			nTicketInput.placeholder.GetComponent<Text>().text = "Completa los datos";
+		if(phoneInput.text.Equals("")){
+			phoneInput.placeholder.GetComponent<Text>().text = "Telefono";
+			phoneInput.placeholder.GetComponent<Text>().color = Color.red;
+		}
 
-		if(storeInput.text.Equals(""))
-			storeInput.placeholder.GetComponent<Text>().text = "Completa los datos";
+		if(storeInput.text.Equals("")){
+			storeInput.placeholder.GetComponent<Text>().text = "Tienda";
+			storeInput.placeholder.GetComponent<Text>().color = Color.red;
+		}
 	}
 
 	bool ValidateInputs(){
 		if(nTicket.Length == 0 || usrName.Length==0 || email.Length==0 || phone.Length==0 || store.Length==0)
 			return false;
-		if(nTicket.Length > 0 && (int.Parse(nTicket) > 100 || int.Parse(nTicket) < 0 ))
+		if(nTicket.Length > 0 && (int.Parse(nTicket) > 8500 || int.Parse(nTicket) < 0 ))
 			return false;
 
 		return true;
@@ -79,24 +102,18 @@ public sealed class UserData : MonoBehaviour {
 
 	IEnumerator IsAWinningTicket(){
 		if(ConnectionStatus.Instance.connected){
-			string phpInstruction = "http://seven-eleven.herokuapp.com/numbers/register_winner.json?number="+nTicket;
+			string phpInstruction = "http://seven-eleven.herokuapp.com/users/submit_with_address.json?ticket="+nTicket;
 
 			yield return StartCoroutine(DataBaseManager.GetStringFromPHP(phpInstruction));
 
 			WWW phpResult = DataBaseManager.result;
+			win = CheckStringValue(phpResult.text);
 
-			if (phpResult == null){
-				print ("No conection");
-				ScreenController.Instance.Disconnected();
-			}
-			else{
-				win = CheckStringValue(phpResult.text);//Random.value < 0.5f ? true : false;
+			if(win)
+				ScreenController.Instance.Continue();
+			else
+				ScreenController.Instance.Fail();
 
-				if(win)
-					ScreenController.Instance.Continue();
-				else
-					ScreenController.Instance.Fail();
-			}
 		}
 		else
 			ScreenController.Instance.Fail();
@@ -104,10 +121,13 @@ public sealed class UserData : MonoBehaviour {
 
 
 	bool CheckStringValue(string result){
-		if(result.Equals("{\"retry\":true}"))
+		if(result.Contains("Ticket duplicado"))
 			return false;
-		if(result.Contains("true"))
+		if(result.Contains("true")){
+			amount = float.Parse(result.Split(':')[3].Replace("}",""));
+			ScreenController.Instance.SetAmount(amount);
 			return true;
+		}
 		return false;
 	}
 }

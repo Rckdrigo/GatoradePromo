@@ -10,6 +10,10 @@ public sealed class ScreenController : Singleton<ScreenController> {
 		animator = GetComponent<Animator>();
 	}
 
+	public void SetAmount(float amount){
+		animator.SetBool(""+amount,true);
+	}
+
 	public void ARDetected (bool value) {
 		animator.SetBool("ARDetection",value);
 	}

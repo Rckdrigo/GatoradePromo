@@ -8,6 +8,7 @@ public sealed class PreviewPhoto : Singleton<PreviewPhoto> {
 	public RawImage image;
 
 	public void ShowPreviewPhoto(){
+		image.texture = null;
 		StartCoroutine(LookForPhoto());
 	}
 

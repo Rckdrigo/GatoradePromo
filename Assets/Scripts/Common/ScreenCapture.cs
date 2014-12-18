@@ -28,7 +28,7 @@ namespace MyUnity.CommonUtilities{
 			_fileName = fileName;
 			#if UNITY_EDITOR
 			_path =  Application.dataPath;
-			Application.CaptureScreenshot("Assets/"+_fileName,3);
+			Application.CaptureScreenshot("Assets/"+_fileName,2);
 			#else
 			_path =  Application.persistentDataPath;
 			Application.CaptureScreenshot(_fileName,3);

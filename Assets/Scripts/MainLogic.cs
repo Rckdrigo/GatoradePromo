@@ -9,7 +9,7 @@ public class MainLogic : Singleton<MainLogic> {
 	public string passwordCredential = "";
 
 	public string fileName = "";
-	//public GameObject loadingCircle;
+	public GameObject loading;
 	bool lookingForFile;
 
 	// Use this for initialization
@@ -44,11 +44,11 @@ public class MainLogic : Singleton<MainLogic> {
 
 	IEnumerator LookforFile(){
 		bool fileExists;
-		yield return new WaitForSeconds(1);
+		yield return new WaitForSeconds(3);
 		yield return (fileExists = SearchFile());
 		if(fileExists){
-			ScreenController.Instance.Continue();
 			PreviewPhoto.Instance.ShowPreviewPhoto();
+			ScreenController.Instance.Continue();
 			yield break;
 		}
 		else {		
@@ -63,11 +63,17 @@ public class MainLogic : Singleton<MainLogic> {
 			lookingForFile = true;
 			ScreenCapture.TakeScreenShot(fileName.Equals("")? "Screenshot.jpg":fileName);		
 			StartCoroutine(LookforFile());
+			//ScreenController.Instance.Continue();
 		}
 	}
 
 	public void SendEmail(){
-		//loadingCircle.SetActive(true);
+		loading.SetActive(true);
+		Invoke("wait",0.5f);
+
+	}
+
+	void wait(){	
 		StartCoroutine (EmailSender.SendEmail(ScreenCapture.GetLastScreenshotPath()));
 		ScreenController.Instance.Continue();
 	}
@@ -76,8 +82,6 @@ public class MainLogic : Singleton<MainLogic> {
 		lookingForFile = false;
 	}
 
-	public void Update(){
-		print (ConnectionStatus.Instance.connected);
-	}
+
 }
 
