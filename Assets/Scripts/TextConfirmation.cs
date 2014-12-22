@@ -6,10 +6,11 @@ public class TextConfirmation : MonoBehaviour {
 	
 	// Use this for initialization
 	void OnEnable () {
-		string text = "Confirma tus datos:\n\n" 
-			+ PlayerPrefs.GetString("usrName") + "\n"
-			+ PlayerPrefs.GetString("email") + "\n"
-			+ PlayerPrefs.GetString("phone") + "\n";
+		string text = "CONFIRMA TUS DATOS:\n\n NOMBRE : " + PlayerPrefs.GetString("usrName") 
+			+ "\nEMAIL : " + PlayerPrefs.GetString("email")
+				+ "\nTELEFONO : " + PlayerPrefs.GetString("phone")
+				+ "\nTIENDA : " + PlayerPrefs.GetString("store") 
+				+ "\nTICKET : " + PlayerPrefs.GetString("nTicket");
 		GetComponent<Text>().text = text;
 
 	}

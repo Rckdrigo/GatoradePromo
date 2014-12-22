@@ -4,7 +4,7 @@ using MyUnity.CommonUtilities;
 using System.Collections;
 
 [RequireComponent(typeof(ConnectionStatus))]
-public sealed class UserData : MonoBehaviour {
+public sealed class UserData : Singleton<UserData> {
 
 	public InputField nTicketInput; 
 	public InputField usrNameInput; 
@@ -13,6 +13,8 @@ public sealed class UserData : MonoBehaviour {
 	public InputField storeInput; 
 
 	float amount;
+	[HideInInspector()]
+	public string participation;
 
 	[HideInInspector()]
 	public string nTicket;
@@ -27,12 +29,18 @@ public sealed class UserData : MonoBehaviour {
 
 	bool win;
 
-	void Start(){
+	void OnEnable(){
+		participation = "";
 		if(PlayerPrefs.HasKey("nTicket")){
 			usrNameInput.text = PlayerPrefs.GetString("usrName"); 
 			emailInput.text = PlayerPrefs.GetString("email"); 
 			phoneInput.text = PlayerPrefs.GetString("phone"); 
 		}
+	}
+
+	public void CheckIfWin(){
+		print ("AQUI");
+		StartCoroutine(IsAWinningTicket());
 	}
 
 	public void SaveData(){
@@ -50,60 +58,55 @@ public sealed class UserData : MonoBehaviour {
 		PlayerPrefs.SetString("phone",phoneInput.text);
 
 		if(ValidateInputs())
-			
-//#if UNITY_EDITOR
-			//ScreenController.Instance.Continue();
-//#else
-		StartCoroutine(IsAWinningTicket());
-//#endif
+			ScreenController.Instance.Continue();
 		else{
-#if !UNITY_EDITOR
 			Handheld.Vibrate();
-#endif
 			InputMessages();
 		}
 	}
 
 	void InputMessages(){
-		if(nTicketInput.text.Equals("")){
-			nTicketInput.placeholder.GetComponent<Text>().text = "No. de ticket";
-			nTicketInput.placeholder.GetComponent<Text>().color = Color.red;
+		if(nTicketInput.text.Length < 35){
+			nTicketInput.text = "";
+			nTicketInput.placeholder.GetComponent<Text>().text = "INGRESA LOS 35 DIGITOS";
+			nTicketInput.placeholder.GetComponent<Text>().color = Color.yellow;
 		}
 
+
 		if(usrNameInput.text.Equals("")){
-			usrNameInput.placeholder.GetComponent<Text>().text = "Nombre";
-			usrNameInput.placeholder.GetComponent<Text>().color = Color.red;
+			usrNameInput.placeholder.GetComponent<Text>().text = "NOMBRE";
+			usrNameInput.placeholder.GetComponent<Text>().color = Color.yellow;
 		}
 
 		if(emailInput.text.Equals("")){
-			emailInput.placeholder.GetComponent<Text>().text = "Email";
-			emailInput.placeholder.GetComponent<Text>().color = Color.red;
+			emailInput.placeholder.GetComponent<Text>().text = "EMAIL";
+			emailInput.placeholder.GetComponent<Text>().color = Color.yellow;
 		}
 
-		if(phoneInput.text.Equals("")){
-			phoneInput.placeholder.GetComponent<Text>().text = "Telefono";
-			phoneInput.placeholder.GetComponent<Text>().color = Color.red;
+		if(phoneInput.text.Length < 8){
+			phoneInput.text = "";
+			phoneInput.placeholder.GetComponent<Text>().text = "TELEFONO";
+			phoneInput.placeholder.GetComponent<Text>().color = Color.yellow;
 		}
 
 		if(storeInput.text.Equals("")){
-			storeInput.placeholder.GetComponent<Text>().text = "Tienda";
-			storeInput.placeholder.GetComponent<Text>().color = Color.red;
+			storeInput.placeholder.GetComponent<Text>().text = "TIENDA";
+			storeInput.placeholder.GetComponent<Text>().color = Color.yellow;
 		}
 	}
 
 	bool ValidateInputs(){
-		if(nTicket.Length == 0 || usrName.Length==0 || email.Length==0 || phone.Length==0 || store.Length==0)
+		if(nTicket.Length < 35 || usrName.Length==0 || email.Length==0 || phone.Length==0 || store.Length==0)
 			return false;
-		if(nTicket.Length > 0 && (int.Parse(nTicket) > 8500 || int.Parse(nTicket) < 0 ))
-			return false;
-
 		return true;
 	}
 
 	IEnumerator IsAWinningTicket(){
 		if(ConnectionStatus.Instance.connected){
-			string phpInstruction = "http://seven-eleven.herokuapp.com/users/submit_with_address.json?ticket="+nTicket;
 
+			string phpInstruction = "http://seven-eleven.herokuapp.com/users/submit_with_address.json?ticket="+nTicket
+				+ "&email=" + email;
+			 
 			yield return StartCoroutine(DataBaseManager.GetStringFromPHP(phpInstruction));
 
 			WWW phpResult = DataBaseManager.result;
@@ -121,13 +124,15 @@ public sealed class UserData : MonoBehaviour {
 
 
 	bool CheckStringValue(string result){
-		if(result.Contains("Ticket duplicado"))
+		if(result.Contains("TICKET DUPLICADO"))
 			return false;
 		if(result.Contains("true")){
 			amount = float.Parse(result.Split(':')[3].Replace("}",""));
 			ScreenController.Instance.SetAmount(amount);
 			return true;
-		}
+		}		
+		print (result.Split(':')[1]);
+		participation = result.Split(':')[1].Replace(",\"winner\"","");
 		return false;
 	}
 }
