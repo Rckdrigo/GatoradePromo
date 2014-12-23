@@ -131,12 +131,12 @@ public sealed class UserData : Singleton<UserData> {
 	bool CheckStringValue(string result){
 		if(result.Contains("TICKET DUPLICADO"))
 			return false;
+		participation = result.Split(':')[1].Replace(",\"winner\"","");
 		if(result.Contains("true")){
 			amount = float.Parse(result.Split(':')[3].Replace("}",""));
 			ScreenController.Instance.SetAmount(amount);
 			return true;
 		}		
-		participation = result.Split(':')[1].Replace(",\"winner\"","");
 		return false;
 	}
 }
