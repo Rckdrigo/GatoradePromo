@@ -12,7 +12,8 @@ public sealed class UserData : Singleton<UserData> {
 	public InputField phoneInput; 
 	public InputField storeInput; 
 
-	float amount;
+	[HideInInspector()]
+	public float amount;
 	[HideInInspector()]
 	public string participation;
 
@@ -39,8 +40,12 @@ public sealed class UserData : Singleton<UserData> {
 	}
 
 	public void CheckIfWin(){
-		print ("AQUI");
+#if !UNITY_EDITOR
 		StartCoroutine(IsAWinningTicket());
+#else
+		ScreenController.Instance.SetAmount(500);
+		ScreenController.Instance.Continue();
+#endif
 	}
 
 	public void SaveData(){
@@ -131,7 +136,6 @@ public sealed class UserData : Singleton<UserData> {
 			ScreenController.Instance.SetAmount(amount);
 			return true;
 		}		
-		print (result.Split(':')[1]);
 		participation = result.Split(':')[1].Replace(",\"winner\"","");
 		return false;
 	}

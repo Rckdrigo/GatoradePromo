@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using MyUnity.CommonUtilities;
 using System.Collections;
+using System.IO;
 
 public sealed class PreviewPhoto : Singleton<PreviewPhoto> {
 
@@ -9,14 +10,37 @@ public sealed class PreviewPhoto : Singleton<PreviewPhoto> {
 
 	public void ShowPreviewPhoto(){
 		image.texture = null;
-		StartCoroutine(LookForPhoto());
+		LookforFile();
+	}
+
+	bool SearchFile(string name, string format){
+		string path;
+		DirectoryInfo dir = new DirectoryInfo(Application.persistentDataPath);	
+		foreach(FileInfo file in dir.GetFiles(format))
+			if(file.Name  == name)
+				return true;
+		return false;
+	}
+
+	void LookforFile(){
+		if(SearchFile("Screenshot.jpg","*.jpg")){
+			StartCoroutine(LookForPhoto());
+		}
+		else {		
+			LookforFile();
+		}
 	}
 
 	IEnumerator LookForPhoto(){
 		WWW www;
-		string url = "file://"+ScreenCapture.GetLastScreenshotPath();
+		string url = "file://"+Application.persistentDataPath+"/"+ScreenCapture._FileName;
+
 		yield return www = new WWW(url);
-		image.GetComponent<RectTransform>().sizeDelta = new Vector2(www.texture.width,www.texture.height);
+		if(www.error != null)
+			StartCoroutine(LookForPhoto());
+		float ratio = (float)www.texture.height / (float)www.texture.width;
+		image.GetComponent<RectTransform>().sizeDelta = new Vector2(www.texture.width/2f,www.texture.width/2f*ratio);
 		image.texture = www.texture;
+
 	}
 }
