@@ -33,10 +33,10 @@ namespace MyUnity.CommonUtilities{
 
 			#if UNITY_EDITOR
 			_path =  Application.dataPath;
-			Application.CaptureScreenshot("Assets/"+_fileName,2);
+			Application.CaptureScreenshot("Assets/"+_fileName);
 			#else
 			_path =  Application.persistentDataPath;
-			Application.CaptureScreenshot(_fileName,2);
+			Application.CaptureScreenshot(_fileName);
 			#endif
 		}
 	}
