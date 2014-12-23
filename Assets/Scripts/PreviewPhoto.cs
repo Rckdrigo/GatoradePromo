@@ -14,7 +14,6 @@ public sealed class PreviewPhoto : Singleton<PreviewPhoto> {
 	}
 
 	bool SearchFile(string name, string format){
-		string path;
 		DirectoryInfo dir = new DirectoryInfo(Application.persistentDataPath);	
 		foreach(FileInfo file in dir.GetFiles(format))
 			if(file.Name  == name)
