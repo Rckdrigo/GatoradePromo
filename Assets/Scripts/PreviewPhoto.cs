@@ -14,7 +14,11 @@ public sealed class PreviewPhoto : Singleton<PreviewPhoto> {
 	}
 
 	bool SearchFile(string name, string format){
+#if UNITY_EDITOR
+		DirectoryInfo dir = new DirectoryInfo(Application.dataPath);	
+#else
 		DirectoryInfo dir = new DirectoryInfo(Application.persistentDataPath);	
+#endif
 		foreach(FileInfo file in dir.GetFiles(format))
 			if(file.Name  == name)
 				return true;
@@ -32,8 +36,11 @@ public sealed class PreviewPhoto : Singleton<PreviewPhoto> {
 
 	IEnumerator LookForPhoto(){
 		WWW www;
+#if UNITY_EDITOR
+		string url = "file://"+Application.dataPath+"/"+ScreenCapture._FileName;
+#else
 		string url = "file://"+Application.persistentDataPath+"/"+ScreenCapture._FileName;
-
+#endif
 		yield return www = new WWW(url);
 		if(www.error != null)
 			StartCoroutine(LookForPhoto());
