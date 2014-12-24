@@ -45,7 +45,7 @@ public sealed class PreviewPhoto : Singleton<PreviewPhoto> {
 		if(www.error != null)
 			StartCoroutine(LookForPhoto());
 		float ratio = (float)www.texture.height / (float)www.texture.width;
-		image.GetComponent<RectTransform>().sizeDelta = new Vector2(3f*www.texture.width/4f,3f*www.texture.width/4f*ratio);
+		image.GetComponent<RectTransform>().sizeDelta = new Vector2(Screen.width,Screen.width*ratio);
 		image.texture = www.texture;
 
 	}
