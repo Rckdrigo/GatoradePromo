@@ -7,7 +7,7 @@ public class SetParticipationNumber : MonoBehaviour {
 	// Use this for initialization
 	void OnEnable () {
 		if (!UserData.Instance.participation.Equals(""))
-			GetComponent<Text>().text = "TU NÚMERO DE PARTICIÓN FUE: " + UserData.Instance.participation;
+			GetComponent<Text>().text = "TU NÚMERO DE PARTICIPACIÓN FUE: " + UserData.Instance.participation;
 		else
 			GetComponent<Text>().text = "TICKET REPETIDO";
 	} 
