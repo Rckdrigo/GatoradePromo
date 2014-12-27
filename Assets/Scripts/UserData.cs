@@ -73,11 +73,17 @@ public sealed class UserData : Singleton<UserData> {
 	void InputMessages(){
 		if(nTicketInput.text.Length < 35){
 			nTicketInput.text = "";
-			nTicketInput.placeholder.GetComponent<Text>().text = "INGRESA LOS 35 DIGITOS";
+			if(nTicketInput.placeholder.GetComponent<Text>().text!="N. DE TICKET NO VÁLIDO")
+				nTicketInput.placeholder.GetComponent<Text>().text = "INGRESA LOS 35 DIGITOS";
 			nTicketInput.placeholder.GetComponent<Text>().color = Color.yellow;
 		}
-
-
+		
+		if(!(nTicket.ToCharArray()[8] == '2' && nTicket.ToCharArray()[9] == '0' && nTicket.ToCharArray()[10] == '1' && nTicket.ToCharArray()[11] == '5')){
+			nTicketInput.text = "";
+			nTicketInput.placeholder.GetComponent<Text>().text = "N. DE TICKET NO VÁLIDO";
+			nTicketInput.placeholder.GetComponent<Text>().color = Color.yellow;
+		}
+			
 		if(usrNameInput.text.Equals("")){
 			usrNameInput.placeholder.GetComponent<Text>().text = "NOMBRE";
 			usrNameInput.placeholder.GetComponent<Text>().color = Color.yellow;
@@ -103,6 +109,9 @@ public sealed class UserData : Singleton<UserData> {
 	bool ValidateInputs(){
 		if(nTicket.Length < 35 || usrName.Length==0 || email.Length==0 || phone.Length==0 || store.Length==0)
 			return false;
+		if(!(nTicket.ToCharArray()[8] == '2' && nTicket.ToCharArray()[9] == '0' && nTicket.ToCharArray()[10] == '1' && nTicket.ToCharArray()[11] == '5'))
+			return false;
+			
 		return true;
 	}
 
