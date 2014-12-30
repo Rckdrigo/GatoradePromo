@@ -6,10 +6,10 @@ using System.IO;
 
 public sealed class PreviewPhoto : Singleton<PreviewPhoto> {
 
-	public RawImage image;
+	public UnityEngine.UI.Image image;
 
 	public void ShowPreviewPhoto(){
-		image.texture = null;
+		image.sprite = null;
 		LookforFile();
 	}
 
@@ -44,9 +44,10 @@ public sealed class PreviewPhoto : Singleton<PreviewPhoto> {
 		yield return www = new WWW(url);
 		if(www.error != null)
 			StartCoroutine(LookForPhoto());
-		float ratio = (float)www.texture.height / (float)www.texture.width;
-		image.GetComponent<RectTransform>().sizeDelta = new Vector2(Screen.width,Screen.width*ratio);
-		image.texture = www.texture;
+		//image.GetComponent<RectTransform>().sizeDelta = new Vector2(Screen.width*2,Screen.height*2);
+		image.sprite = Sprite.Create(www.texture,new Rect(0,0,www.texture.width,www.texture.height),new Vector2(0.5f,0.5f));
+		//image.GetComponent<RectTransform>().sizeDelta = new Vector2(Screen.width*2,Screen.height*2);
+		//image.texture = www.texture;
 
 	}
 }
