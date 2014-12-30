@@ -11,11 +11,9 @@ public class MainLogic : Singleton<MainLogic> {
 
 	// Use this for initialization
 	private void SetEmailData () {
-#if !UNITY_EDITOR
 		bool focusModeSet = CameraDevice.Instance.SetFocusMode(CameraDevice.FocusMode.FOCUS_MODE_CONTINUOUSAUTO);
 		if (!focusModeSet) 
 			Debug.Log("Failed to set focus mode (unsupported mode).");
-#endif
 		EmailSender.SetCredentials(emailCredentials,passwordCredential);
 		string from = "contacto@gatoradepromo.com";
 		string to = "gatoradepromonfl2015@gmail.com,contacto@gatoradepromo.com";
