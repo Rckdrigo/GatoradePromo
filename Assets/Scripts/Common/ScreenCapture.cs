@@ -5,7 +5,7 @@ using System.Collections;
 namespace MyUnity.CommonUtilities{
 	public sealed class ScreenCapture{
 		private static string _path = "";
-		
+
 		public static string _Path {
 			get {
 				return _path;
@@ -17,6 +17,7 @@ namespace MyUnity.CommonUtilities{
 				return _fileName;
 			}
 		}
+
 
 		public static void TakeScreenShot(string fileName){
 			
