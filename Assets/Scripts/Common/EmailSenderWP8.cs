@@ -31,7 +31,7 @@ namespace MyUnity.CommonUtilities{
 			_credentials.credentialsPassword = password;
 		}
 		
-		public static bool sendEmail (string attachment){
+		public static bool sendEmail (){//string attachment){
 			EmailComposeTask emailComposeTask = new EmailComposeTask();
 			emailComposeTask.Subject = _ebody.subject;
 			emailComposeTask.Body =  _ebody.body;
@@ -60,26 +60,6 @@ namespace MyUnity.CommonUtilities{
 			
 			return true;
 		}
-		
-		/*static bool sendEmail (){
-			MailMessage mail = new MailMessage();
-			
-			mail.From = new MailAddress(_ebody.from);
-			mail.To.Add(_ebody.to);
-			mail.Subject = _ebody.subject;
-			mail.Body = _ebody.body;
-			
-			SmtpClient smtpServer = new SmtpClient("smtp.gmail.com");
-			smtpServer.Port = 587;
-			smtpServer.Credentials = new System.Net.NetworkCredential(_credentials.credentialsEmail, _credentials.credentialsPassword) 
-				as ICredentialsByHost;
-			smtpServer.EnableSsl = true;
-			ServicePointManager.ServerCertificateValidationCallback = 
-				delegate(object s, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) 
-			{ return true; };
-			smtpServer.Send(mail);
-			return true;
-		}
-		*/
+
 	}
 }

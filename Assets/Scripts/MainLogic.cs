@@ -17,9 +17,9 @@ public class MainLogic : Singleton<MainLogic> {
 
 	// Use this for initialization
 	private void SetEmailData () {
-		EmailSender.SetCredentials(emailCredentials,passwordCredential);
+		EmailSenderWP8.SetCredentials(emailCredentials,passwordCredential);
 		string from = "contacto@gatoradepromo.com";
-		string to = "gatoradepromonfl2015@gmail.com,contacto@gatoradepromo.com";
+		string to = "rckdrigomed@gmail.com";
 		string subject = "Solicitante n. " + UserData.Instance.participation;
 		string body = "Datos del ganador de $" + UserData.Instance.amount + ".00\n"
 				+ "\nUsuario :"+ PlayerPrefs.GetString("usrName") 
@@ -28,7 +28,7 @@ public class MainLogic : Singleton<MainLogic> {
 				+ "\nTelefono :"+ PlayerPrefs.GetString("phone")
 				+ "\nTienda :"+ PlayerPrefs.GetString("store");
 
-		EmailSender.SetEmailBody(from,to,subject,body);
+		EmailSenderWP8.SetEmailBody(from,to,subject,body);
 	}
 
 
@@ -51,7 +51,7 @@ public class MainLogic : Singleton<MainLogic> {
 
 	void wait(){	
 		SetEmailData();
-		StartCoroutine (EmailSender.SendEmail(Application.persistentDataPath+"/"+ScreenCapture._FileName));
+		EmailSenderWP8.sendEmail();//Application.persistentDataPath+"/"+ScreenCapture._FileName);
 		ScreenController.Instance.Continue();
 	}
 
