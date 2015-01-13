@@ -44,10 +44,6 @@ public sealed class PreviewPhoto : Singleton<PreviewPhoto> {
 		yield return www = new WWW(url);
 		if(www.error != null)
 			StartCoroutine(LookForPhoto());
-		//image.GetComponent<RectTransform>().sizeDelta = new Vector2(Screen.width*2,Screen.height*2);
-		image.sprite = Sprite.Create(www.texture,new Rect(0,0,www.texture.width,www.texture.height),new Vector2(0.5f,0.5f));
-		image.GetComponent<RectTransform>().sizeDelta = new Vector2(Screen.width,Screen.height);
-		//image.texture = www.texture;
-
+		image.sprite = Sprite.Create(www.texture,new Rect(0,0,Screen.width,Screen.height),new Vector2(0.5f,0.5f));
 	}
 }
