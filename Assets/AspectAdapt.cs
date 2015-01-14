@@ -83,16 +83,19 @@ public class AspectAdapt : MonoBehaviour {
 		
 		switch(device){
 		case IosDevice.IPhone4:
+			rect[2].position.x = Screen.width/2;
 			GetComponent<RectTransform>().position = rect[2].position;
 			GetComponent<RectTransform>().sizeDelta = rect[2].deltaSize;
 			break;
 			
 		case IosDevice.IPhone5:
+			rect[1].position.x = Screen.width/2;
 			GetComponent<RectTransform>().position = rect[1].position;
 			GetComponent<RectTransform>().sizeDelta = rect[1].deltaSize;
 			break;
 			
 		case IosDevice.IPad:
+			rect[0].position.x = Screen.width/2;
 			GetComponent<RectTransform>().position = rect[0].position;
 			GetComponent<RectTransform>().sizeDelta = rect[0].deltaSize;
 			break;
