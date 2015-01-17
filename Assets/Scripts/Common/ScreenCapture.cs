@@ -4,6 +4,8 @@ using System.Collections;
 
 namespace MyUnity.CommonUtilities{
 	public sealed class ScreenCapture{
+		public static Texture2D tex;
+
 		private static string _path = "";
 
 		public static string _Path {
@@ -18,9 +20,14 @@ namespace MyUnity.CommonUtilities{
 			}
 		}
 
+		public static void TakeSaveScreenPixels(){
+			tex = new Texture2D(Screen.width, Screen.height);
+			tex.ReadPixels(new Rect(0,0,Screen.width,Screen.height),0,0);
+			tex.Apply();		
+		}
 
 		public static void TakeScreenShot(string fileName){
-			
+			TakeSaveScreenPixels ();
 			_fileName = fileName;
 			#if UNITY_EDITOR
 			DirectoryInfo dir = new DirectoryInfo(Application.dataPath);	
